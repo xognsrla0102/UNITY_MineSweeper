@@ -2,34 +2,28 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private static GameManager instance;
-    public static GameManager Instance
-    {
-        get
-        {
-            if (instance == null) instance = new GameManager();
-            return instance;
-        }
-    }
+    public static GameManager Instance;
 
     public GameObject mainMenu;
-    public GameObject inGame;
+    public InGame inGame;
 
     public void Awake()
     {
+        Instance = this;
+
         if (!mainMenu.activeSelf) mainMenu.SetActive(true);
-        if (inGame.activeSelf) inGame.SetActive(false);
+        if (inGame.gameObject.activeSelf) inGame.gameObject.SetActive(false);
     }
 
     public void OnClickBtnPlay()
     {
         mainMenu.SetActive(false);
-        inGame.SetActive(true);
+        inGame.gameObject.SetActive(true);
     }
 
     public void OnClickBtnBack()
     {
         mainMenu.SetActive(true);
-        inGame.SetActive(false);
+        inGame.gameObject.SetActive(false);
     }
 }

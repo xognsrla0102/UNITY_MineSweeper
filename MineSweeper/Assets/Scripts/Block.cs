@@ -17,7 +17,7 @@ public class Block : MonoBehaviour
         }
     }
 
-    public bool isBomb;
+    [HideInInspector] public bool isBomb;
 
     private bool isBroken;
     public bool IsBroken
@@ -25,7 +25,25 @@ public class Block : MonoBehaviour
         get => isBroken;
         set
         {
-            SetAroundBombCntText();
+            isBroken = value;
+
+            if (isBroken)
+            {
+                gameObject.GetComponent<Image>().color = isBomb ? new Color(1, 0.2f, 0.2f) : new Color(1, 1, 1);
+                SetAroundBombCnt();
+            }
+        }
+    }
+
+    private bool isFlag;
+    public bool IsFlag
+    {
+        get => isFlag;
+        set
+        {
+            isFlag = value;
+            gameObject.GetComponent<Image>().color = isFlag ? new Color(1, 245 / 255f, 0) : new Color(164 / 255f, 164 / 255f, 164 / 255f);
+            aroundBombCntText.text = isFlag ? "¢Â" : "X";
         }
     }
 
@@ -36,6 +54,17 @@ public class Block : MonoBehaviour
     private readonly int[] dx = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
     private Block[,] blockMap;
+
+    public void Awake()
+    {
+        gameObject.GetComponent<Image>().color = new Color(164 / 255f, 164 / 255f, 164 / 255f);
+    }
+
+    public void OnMouseOver()
+    {
+        if (Input.GetMouseButtonUp(1))
+            OnRightClick();
+    }
 
     public void SetPos(int y, int x)
     {
@@ -56,7 +85,7 @@ public class Block : MonoBehaviour
         {
             int ny = y + dy[i];
             int nx = x + dx[i];
-            if (ny < 0 || nx < 0 || ny >= 9 || nx >= 9) continue;
+            if (ny < 0 || nx < 0 || ny >= blockMap.GetLength(0) || nx >= blockMap.GetLength(1)) continue;
             if (blockMap[ny, nx].isBomb) bombCnt++;
         }
 
@@ -75,9 +104,15 @@ public class Block : MonoBehaviour
 
     public void OnClick()
     {
-        isBroken = true;
+        IsBroken = true;
+        if (AroundBombCnt != 0) return;
 
         InGame inGame = transform.parent.parent.parent.GetComponent<InGame>();
         inGame.OnClickBlock(y, x);
+    }
+
+    public void OnRightClick()
+    {
+        if (!isBroken) IsFlag = !IsFlag;
     }
 }
