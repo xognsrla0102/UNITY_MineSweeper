@@ -18,7 +18,7 @@ public class Block : MonoBehaviour
                     aroundBombCntText.text = "━";
                     break;
                 case BlockType.BROKEN: // 깨지면 주변 지뢰 수 표기
-                    aroundBombCntText.text = $"{aroundBombCnt}";
+                    aroundBombCntText.text = aroundBombCnt == 0 ? string.Empty : $"{aroundBombCnt}";
                     break;
                 case BlockType.FLAG: // 깃발
                     aroundBombCntText.text = "★";
@@ -72,13 +72,13 @@ public class Block : MonoBehaviour
         // 안 깨졌거나, 의문 블럭이 아닌 경우엔 클릭해도 반응 없음
         if (BlockType != BlockType.UNBROKEN && BlockType != BlockType.QUESTION) return;
 
-        BlockType = BlockType.BROKEN;
-
         // 폭탄일 경우 게임 오버
-        //if ()
-        //{
-        //    return;
-        //}
+        if (isBomb)
+        {
+            BlockType = BlockType.BOMB;
+            return;
+        }
+        BlockType = BlockType.BROKEN;
 
         // 주변에 지뢰가 있을 경우 탈출
         if (aroundBombCnt != 0) return;

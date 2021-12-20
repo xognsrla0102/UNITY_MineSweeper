@@ -23,7 +23,7 @@ public class InGame : MonoBehaviour
             }
         }
 
-        int bombCnt = Random.Range(25, 30);
+        int bombCnt = 100;
         int nowBombCnt = 0;
         int by, bx;
 

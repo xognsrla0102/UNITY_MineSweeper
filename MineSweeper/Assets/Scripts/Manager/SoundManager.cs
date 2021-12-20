@@ -7,6 +7,14 @@ public enum BGM_Type
     BGM_NUM
 }
 
+public enum SFX_Type
+{
+    ON_CLICK,
+    BREAK_BLOCK,
+    BOMB,
+    GAME_CLEAR
+}
+
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;

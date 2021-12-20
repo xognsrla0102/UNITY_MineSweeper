@@ -23,21 +23,21 @@ public class Timer : MonoBehaviour
             return (LIMIT_MILI_SECONDS - applyOffsetTime) / 1000f;
         }
     }
-    private readonly Stopwatch ingameTimer = new();
-    private readonly Stopwatch secTimer = new();
+    private readonly Stopwatch ingameTimer = new Stopwatch();
+    private readonly Stopwatch secTimer = new Stopwatch();
 
     public bool IsBlack
     {
         get => isBlack;
         set
         {
+            GetComponent<Outline>().enabled = value;
             if (isBlack == value) return;
 
             isBlack = value;
-            GetComponent<Outline>().enabled = isBlack;
             GameManager.Instance.inGame.SetBG_Color(isBlack ? Color.black : Color.white);
         }
-    }    
+    }
 
     public void Awake()
     {
@@ -52,7 +52,7 @@ public class Timer : MonoBehaviour
         isStop = false;
         IsBlack = false;
 
-        ingameTimer.Start();
+        ingameTimer.Restart();
 
         StartCoroutine(CheckVelTime());
     }
