@@ -149,6 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aroundBombCntText: {fileID: 8235787099705367106}
   isBomb: 0
+  breakEffect: {fileID: 8844592758199080763, guid: 12f469588b8a95a40b92a954d0ae4d92, type: 3}
 --- !u!61 &9206141681721962709
 BoxCollider2D:
   m_ObjectHideFlags: 0

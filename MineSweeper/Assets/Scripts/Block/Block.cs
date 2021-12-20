@@ -45,6 +45,8 @@ public class Block : MonoBehaviour
 
     public bool isBomb;
 
+    [SerializeField] private GameObject breakEffect;
+
     public void SettingBlock(int y, int x, Block[,] blockMap)
     {
         this.x = x;
@@ -71,6 +73,10 @@ public class Block : MonoBehaviour
     {
         // 안 깨졌거나, 의문 블럭이 아닌 경우엔 클릭해도 반응 없음
         if (BlockType != BlockType.UNBROKEN && BlockType != BlockType.QUESTION) return;
+
+        GameObject breakEffect = Instantiate(this.breakEffect);
+        breakEffect.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
+
 
         // 폭탄일 경우 게임 오버
         if (isBomb)
