@@ -17,12 +17,14 @@ public class GameManager : MonoBehaviour
 
     public void OnClickBtnPlay()
     {
+        SoundManager.Instance.PlaySFX(SFX_Type.ON_CLICK);
         mainMenu.SetActive(false);
         inGame.gameObject.SetActive(true);
     }
 
     public void OnClickBtnBack()
     {
+        SoundManager.Instance.PlaySFX(SFX_Type.ON_CLICK);
         mainMenu.SetActive(true);
         inGame.gameObject.SetActive(false);
     }

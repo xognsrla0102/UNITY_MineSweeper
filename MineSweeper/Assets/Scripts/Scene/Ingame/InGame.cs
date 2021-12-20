@@ -3,6 +3,9 @@ using UnityEngine.UI;
 
 public class InGame : MonoBehaviour
 {
+    [SerializeField] private GameObject failPopup;
+    [SerializeField] private Text score;
+
     [SerializeField] private GameObject blockFactory;
     [SerializeField] private Transform boardGrid;
     [SerializeField] private Image backGround;
@@ -23,7 +26,7 @@ public class InGame : MonoBehaviour
             }
         }
 
-        int bombCnt = 100;
+        int bombCnt = 80;
         int nowBombCnt = 0;
         int by, bx;
 

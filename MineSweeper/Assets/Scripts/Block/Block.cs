@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Block : MonoBehaviour
@@ -77,13 +78,18 @@ public class Block : MonoBehaviour
         GameObject breakEffect = Instantiate(this.breakEffect);
         breakEffect.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
 
-
         // 폭탄일 경우 게임 오버
         if (isBomb)
         {
+            SoundManager.Instance.PlayBGM(BGM_Type.GAME_FAIL);
+            SoundManager.Instance.PlaySFX(SFX_Type.BOMB);
             BlockType = BlockType.BOMB;
             return;
         }
+
+        SFX_Type breakBlockSFX = (SFX_Type)UnityEngine.Random.Range((int)SFX_Type.BREAK_BLOCK_1, (int)SFX_Type.BREAK_BLOCK_4 + 1);
+        SoundManager.Instance.PlaySFX(breakBlockSFX);
+
         BlockType = BlockType.BROKEN;
 
         // 주변에 지뢰가 있을 경우 탈출

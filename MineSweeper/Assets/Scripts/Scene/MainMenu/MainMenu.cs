@@ -2,7 +2,7 @@
 
 public class MainMenu : MonoBehaviour
 {
-    private void OnEnable()
+    public void OnEnable()
     {
         SoundManager.Instance.PlayBGM(BGM_Type.TITLE);
     }
