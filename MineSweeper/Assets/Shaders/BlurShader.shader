@@ -1,4 +1,4 @@
-Shader "Unlit/BlurShader"
+﻿Shader "Unlit/BlurShader"
 {
     Properties
     {
