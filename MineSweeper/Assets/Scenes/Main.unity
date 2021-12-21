@@ -631,7 +631,7 @@ GameObject:
   - component: {fileID: 500161628}
   - component: {fileID: 500161627}
   m_Layer: 5
-  m_Name: ScoreText
+  m_Name: timeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1404,7 +1404,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &982464737
 Transform:
   m_ObjectHideFlags: 0
@@ -1433,7 +1433,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   failPopup: {fileID: 358098996}
-  score: {fileID: 0}
+  timeText: {fileID: 500161627}
   blockFactory: {fileID: 8235787098049443602, guid: 6d1bd56d6c1334c45b18095730ecfc56, type: 3}
   boardGrid: {fileID: 233427356}
   backGround: {fileID: 1813739046}

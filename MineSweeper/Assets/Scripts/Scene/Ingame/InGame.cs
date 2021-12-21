@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class InGame : MonoBehaviour
 {
     [SerializeField] private GameObject failPopup;
-    [SerializeField] private Text score;
+    [SerializeField] private Text timeText;
 
     [SerializeField] private GameObject blockFactory;
     [SerializeField] private Transform boardGrid;
@@ -45,6 +45,8 @@ public class InGame : MonoBehaviour
         for (int i = 0; i < Utility.SIZEY; i++)
             for (int j = 0; j < Utility.SIZEX; j++)
                 blockMap[i, j].SetAroundBombCnt();
+
+        failPopup.SetActive(false);
     }
 
     public void OnDisable()
@@ -64,8 +66,10 @@ public class InGame : MonoBehaviour
         }
     }
 
-    public void GameOver()
+    public void GameOver(float time)
     {
+        SoundManager.Instance.PlayBGM(BGM_Type.GAME_FAIL);
+
         for (int i = 0; i < Utility.SIZEY; i++)
         {
             for (int j = 0; j < Utility.SIZEX; j++)
@@ -74,6 +78,9 @@ public class InGame : MonoBehaviour
                 blockMap[i, j].OnClick();
             }
         }
+
+        failPopup.SetActive(true);
+        timeText.text = $"[Record] / [Best] :\n[{time}] : [{GameManager.Instance.Record}]";
     }
 
     public void SetBG_Color(Color color)

@@ -88,11 +88,11 @@ public class Timer : MonoBehaviour
                 if (remainTime <= 80)
                     IsBlack = true;
 
-                if (remainTime <= 0)
+                if (remainTime < 1)
                 {
                     isStop = true;
                     timeText.text = $"YOU FAILED";
-                    GameManager.Instance.inGame.GameOver();
+                    GameManager.Instance.inGame.GameOver(0);
                     yield break;
                 }
             }

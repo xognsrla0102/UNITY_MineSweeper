@@ -7,10 +7,20 @@ public class GameManager : MonoBehaviour
     public GameObject mainMenu;
     public InGame inGame;
 
+    public float Record
+    {
+        get { return PlayerPrefs.GetFloat("Record"); }
+        set { PlayerPrefs.SetFloat("Record", value); }
+    }
+
     public void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
+    }
 
+    public void Start()
+    {
         if (!mainMenu.activeSelf) mainMenu.SetActive(true);
         if (inGame.gameObject.activeSelf) inGame.gameObject.SetActive(false);
     }

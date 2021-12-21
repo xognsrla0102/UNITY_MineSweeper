@@ -30,7 +30,8 @@ public class SoundManager : MonoBehaviour
 
     public void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
 
         foreach (var audio in audios)
         {
