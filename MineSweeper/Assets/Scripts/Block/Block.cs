@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Block : MonoBehaviour
@@ -22,7 +21,7 @@ public class Block : MonoBehaviour
                     aroundBombCntText.text = aroundBombCnt == 0 ? string.Empty : $"{aroundBombCnt}";
                     break;
                 case BlockType.FLAG: // 깃발
-                    aroundBombCntText.text = "★";
+                    aroundBombCntText.text = "※";
                     break;
                 case BlockType.QUESTION: // 의문
                     aroundBombCntText.text = "?";
@@ -81,6 +80,18 @@ public class Block : MonoBehaviour
         BlockType = isBomb ? BlockType.BOMB : BlockType.BROKEN;
     }
 
+    public void OnMouseOver()
+    {
+        if (GameManager.Instance.inGame.isResult) return;
+
+        if (MouseInput.Instance.LeftClick())
+            OnClick();
+        if (MouseInput.Instance.RightClick())
+            OnRightClick();
+        if (MouseInput.Instance.MiddleClick())
+            OnMiddleClick();
+    }
+
     public void OnClick()
     {
         // 결과 창일 경우 클릭 못함
@@ -101,7 +112,7 @@ public class Block : MonoBehaviour
             return;
         }
 
-        SFX_Type breakBlockSFX = (SFX_Type)UnityEngine.Random.Range((int)SFX_Type.BREAK_BLOCK_1, (int)SFX_Type.BREAK_BLOCK_4 + 1);
+        SFX_Type breakBlockSFX = (SFX_Type)Random.Range((int)SFX_Type.BREAK_BLOCK_1, (int)SFX_Type.BREAK_BLOCK_4 + 1);
         SoundManager.Instance.PlaySFX(breakBlockSFX);
         BlockType = BlockType.BROKEN;
         GameManager.Instance.inGame.RemainBlockCnt--;
@@ -112,15 +123,7 @@ public class Block : MonoBehaviour
         GameManager.Instance.inGame.OnClickBlock(y, x);
     }
 
-    public void OnMouseOver()
-    {
-        if (GameManager.Instance.inGame.isResult) return;
-
-        if (Input.GetMouseButtonUp(1))
-            OnRightClick();
-    }
-
-    public void OnRightClick()
+    private void OnRightClick()
     {
         switch (BlockType)
         {
@@ -134,5 +137,10 @@ public class Block : MonoBehaviour
                 BlockType = BlockType.UNBROKEN;
                 break;
         }
+    }
+
+    private void OnMiddleClick()
+    {
+
     }
 }

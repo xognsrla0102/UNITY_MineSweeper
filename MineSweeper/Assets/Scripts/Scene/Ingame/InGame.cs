@@ -46,7 +46,7 @@ public class InGame : MonoBehaviour
             }
         }
 
-        int bombCnt = Random.Range(1, 2);
+        int bombCnt = Random.Range(50, 60);
         int nowBombCnt = 0;
         int by, bx;
 
