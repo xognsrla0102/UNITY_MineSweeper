@@ -85,7 +85,7 @@ public class Timer : MonoBehaviour
                 // 10초 지난 횟수 만큼 속도 가중치를 더함[0.25 배]
                 timeOffset = 2.25f - (int)(10 - remainTime / 10) * 0.0025f;
 
-                if (remainTime <= 81)
+                if (remainTime <= 80)
                     IsBlack = true;
 
                 if (remainTime < 1)

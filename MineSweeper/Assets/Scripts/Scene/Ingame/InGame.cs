@@ -46,7 +46,7 @@ public class InGame : MonoBehaviour
             }
         }
 
-        int bombCnt = Random.Range(50, 60);
+        int bombCnt = Random.Range(10, 20);
         int nowBombCnt = 0;
         int by, bx;
 
@@ -86,7 +86,18 @@ public class InGame : MonoBehaviour
         {
             int ny = y + Utility.dy[i];
             int nx = x + Utility.dx[i];
-            if (ny < 0 || nx < 0 || ny >= Utility.SIZEY || nx >= Utility.SIZEX || blockMap[ny, nx].BlockType == BlockType.BOMB) continue;
+            if (ny < 0 || nx < 0 || ny >= Utility.SIZEY || nx >= Utility.SIZEX || blockMap[ny, nx].isBomb) continue;
+            blockMap[ny, nx].OnClick();
+        }
+    }
+
+    public void OnClick3x3(int y, int x)
+    {
+        for (int i = 0; i < Utility.BLOCK_DIR; i++)
+        {
+            int ny = y + Utility.dy[i];
+            int nx = x + Utility.dx[i];
+            if (ny < 0 || nx < 0 || ny >= Utility.SIZEY || nx >= Utility.SIZEX || blockMap[ny, nx].BlockType == BlockType.FLAG) continue;
             blockMap[ny, nx].OnClick();
         }
     }

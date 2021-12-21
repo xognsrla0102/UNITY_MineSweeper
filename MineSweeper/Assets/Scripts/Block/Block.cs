@@ -44,6 +44,7 @@ public class Block : MonoBehaviour
     private int aroundBombCnt;
 
     public bool isBomb;
+    public bool ;
 
     [SerializeField] private GameObject breakEffect;
 
@@ -69,6 +70,19 @@ public class Block : MonoBehaviour
         aroundBombCnt = bombCnt;
     }
 
+    private int GetAroundFlagCnt()
+    {
+        int flagCnt = 0;
+        for (int i = 0; i < Utility.BLOCK_DIR; i++)
+        {
+            int ny = y + Utility.dy[i];
+            int nx = x + Utility.dx[i];
+            if (ny < 0 || nx < 0 || ny >= Utility.SIZEY || nx >= Utility.SIZEX) continue;
+            if (blockMap[ny, nx].BlockType == BlockType.FLAG) flagCnt++;
+        }
+        return flagCnt;
+    }
+
     public void BreakAfterGameOver()
     {
         // 이미 깬 것들은 깰 필요 없음
@@ -91,6 +105,8 @@ public class Block : MonoBehaviour
         if (MouseInput.Instance.MiddleClick())
             OnMiddleClick();
     }
+
+    public IEnumerator 10SecAfterBlink
 
     public void OnClick()
     {
@@ -119,7 +135,8 @@ public class Block : MonoBehaviour
 
         // 주변에 지뢰가 있을 경우 탈출
         if (aroundBombCnt != 0) return;
-        // 주변 블럭 깸
+
+        // 주변 8블럭에 지뢰 없으면 블럭 깸
         GameManager.Instance.inGame.OnClickBlock(y, x);
     }
 
@@ -141,6 +158,8 @@ public class Block : MonoBehaviour
 
     private void OnMiddleClick()
     {
-
+        if (BlockType != BlockType.BROKEN) return;
+        if (aroundBombCnt != GetAroundFlagCnt()) return;
+        GameManager.Instance.inGame.OnClick3x3(y, x);
     }
 }
