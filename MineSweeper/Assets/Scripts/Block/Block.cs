@@ -70,9 +70,23 @@ public class Block : MonoBehaviour
         aroundBombCnt = bombCnt;
     }
 
+    public void BreakAfterGameOver()
+    {
+        // 이미 깬 것들은 깰 필요 없음
+        if (BlockType == BlockType.BROKEN || BlockType == BlockType.BOMB) return;
+
+        GameObject breakEffect = Instantiate(this.breakEffect);
+        breakEffect.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
+
+        BlockType = isBomb ? BlockType.BOMB : BlockType.BROKEN;
+    }
+
     public void OnClick()
     {
-        // 안 깨졌거나, 의문 블럭이 아닌 경우엔 클릭해도 반응 없음
+        // 결과 창일 경우 클릭 못함
+        if (GameManager.Instance.inGame.isResult) return;
+
+        // 안 깼거나, 의문 블럭만 부술 수 있음
         if (BlockType != BlockType.UNBROKEN && BlockType != BlockType.QUESTION) return;
 
         GameObject breakEffect = Instantiate(this.breakEffect);
@@ -81,16 +95,16 @@ public class Block : MonoBehaviour
         // 폭탄일 경우 게임 오버
         if (isBomb)
         {
-            SoundManager.Instance.PlayBGM(BGM_Type.GAME_FAIL);
             SoundManager.Instance.PlaySFX(SFX_Type.BOMB);
             BlockType = BlockType.BOMB;
+            GameManager.Instance.inGame.GameOver();
             return;
         }
 
         SFX_Type breakBlockSFX = (SFX_Type)UnityEngine.Random.Range((int)SFX_Type.BREAK_BLOCK_1, (int)SFX_Type.BREAK_BLOCK_4 + 1);
         SoundManager.Instance.PlaySFX(breakBlockSFX);
-
         BlockType = BlockType.BROKEN;
+        GameManager.Instance.inGame.RemainBlockCnt--;
 
         // 주변에 지뢰가 있을 경우 탈출
         if (aroundBombCnt != 0) return;
@@ -100,6 +114,8 @@ public class Block : MonoBehaviour
 
     public void OnMouseOver()
     {
+        if (GameManager.Instance.inGame.isResult) return;
+
         if (Input.GetMouseButtonUp(1))
             OnRightClick();
     }

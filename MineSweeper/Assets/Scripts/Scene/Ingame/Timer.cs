@@ -13,16 +13,11 @@ public class Timer : MonoBehaviour
     private bool isStop;
     private bool isBlack;
 
-    private float RemainTime
-    {
-        get
-        {
-            // offset만큼 시간 느리게 적용
-            float applyOffsetTime = ingameTimer.ElapsedMilliseconds / timeOffset;
-            // 초 단위로 변경
-            return (LIMIT_MILI_SECONDS - applyOffsetTime) / 1000f;
-        }
-    }
+    // offset만큼 시간 느리게 적용
+    public float TotalTime => ingameTimer.ElapsedMilliseconds / timeOffset;
+
+    private float RemainTimeSec => (LIMIT_MILI_SECONDS - TotalTime) / 1000f;
+
     private readonly Stopwatch ingameTimer = new Stopwatch();
     private readonly Stopwatch secTimer = new Stopwatch();
 
@@ -59,14 +54,19 @@ public class Timer : MonoBehaviour
 
     public void OnDisable()
     {
-        ingameTimer.Stop();
+        StopTimer();
+    }
+
+    public void StopTimer()
+    {
+        if (ingameTimer.IsRunning) ingameTimer.Stop();
         if (secTimer.IsRunning) secTimer.Stop();
     }
 
     public void Update()
     {
         if (isStop) return;
-        timeText.text = $"{RemainTime:0.000}";
+        timeText.text = $"{RemainTimeSec:0.000}";
     }
 
     private IEnumerator CheckVelTime()
@@ -80,19 +80,19 @@ public class Timer : MonoBehaviour
             {
                 secTimer.Restart();
 
-                float remainTime = RemainTime;
+                float remainTime = RemainTimeSec;
 
                 // 10초 지난 횟수 만큼 속도 가중치를 더함[0.25 배]
                 timeOffset = 2.25f - (int)(10 - remainTime / 10) * 0.0025f;
 
-                if (remainTime <= 80)
+                if (remainTime <= 81)
                     IsBlack = true;
 
                 if (remainTime < 1)
                 {
                     isStop = true;
                     timeText.text = $"YOU FAILED";
-                    GameManager.Instance.inGame.GameOver(0);
+                    GameManager.Instance.inGame.GameOver();
                     yield break;
                 }
             }
