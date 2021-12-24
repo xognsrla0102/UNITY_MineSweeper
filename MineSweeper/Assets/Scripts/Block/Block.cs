@@ -44,7 +44,7 @@ public class Block : MonoBehaviour
     private int aroundBombCnt;
 
     public bool isBomb;
-    public bool ;
+    //public bool ;
 
     [SerializeField] private GameObject breakEffect;
 
@@ -106,7 +106,7 @@ public class Block : MonoBehaviour
             OnMiddleClick();
     }
 
-    public IEnumerator 10SecAfterBlink
+    //public IEnumerator 10SecAfterBlink
 
     public void OnClick()
     {
