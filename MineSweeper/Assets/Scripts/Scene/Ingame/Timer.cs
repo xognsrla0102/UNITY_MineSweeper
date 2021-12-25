@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using EZCameraShake;
 
 public class Timer : MonoBehaviour
 {
@@ -30,6 +31,26 @@ public class Timer : MonoBehaviour
 
             isBlack = value;
             GameManager.Instance.inGame.SetBG_Color(isBlack ? Color.black : Color.white);
+
+            if (isBlack)
+            {
+                CameraShaker.Instance.ShakeOnce(4f, 10f, 0.1f, 1f);
+                GameManager.Instance.inGame.ScreenBlackEffect();
+            }
+        }
+    }
+
+    private bool isGrain;
+    private bool IsGrain
+    {
+        get => isGrain;
+        set
+        {
+            isGrain = value;
+            if (isGrain)
+            {
+                GameManager.Instance.inGame.ScreenGrainEffect();
+            }
         }
     }
 
@@ -45,6 +66,7 @@ public class Timer : MonoBehaviour
 
         isStop = false;
         IsBlack = false;
+        IsGrain = false;
 
         ingameTimer.Restart();
 
@@ -54,6 +76,7 @@ public class Timer : MonoBehaviour
     public void OnDisable()
     {
         StopTimer();
+        StopAllCoroutines();
     }
 
     public void StopTimer()
@@ -76,10 +99,13 @@ public class Timer : MonoBehaviour
             // 10초 지난 횟수 만큼 속도 가중치를 더함[0.25 배]
             timeOffset = 2.25f - (int)(10 - remainTime / 10) * 0.0025f;
 
-            if (remainTime <= 80)
+            if (!IsBlack && remainTime <= 80.05f)
                 IsBlack = true;
 
-            if (remainTime <= 0)
+            if (!IsGrain && remainTime <= 30)
+                IsGrain = true;
+
+            if (!isStop && remainTime <= 0)
             {
                 isStop = true;
                 timeText.text = $"YOU FAILED";

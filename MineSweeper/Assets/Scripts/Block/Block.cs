@@ -84,10 +84,16 @@ public class Block : MonoBehaviour
 
     public void BreakAfterGameOver()
     {
-        GameObject breakEffect = Instantiate(this.breakEffect);
-        breakEffect.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
-
+        MakeBreakEffect();
         BlockType = BlockType.BOMB;
+    }
+
+    private void MakeBreakEffect()
+    {
+        GameObject breakEffect = Instantiate(this.breakEffect);
+        breakEffect.transform.parent = gameObject.transform;
+        breakEffect.transform.localPosition = Vector3.back;
+        breakEffect.transform.localScale = Vector3.one;
     }
 
     public void OnMouseOver()
@@ -110,8 +116,7 @@ public class Block : MonoBehaviour
         // 안 깼거나, 의문 블럭만 부술 수 있음
         if (BlockType != BlockType.UNBROKEN && BlockType != BlockType.QUESTION) return;
 
-        GameObject breakEffect = Instantiate(this.breakEffect);
-        breakEffect.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
+        MakeBreakEffect();
 
         // 폭탄일 경우 게임 오버
         if (isBomb)

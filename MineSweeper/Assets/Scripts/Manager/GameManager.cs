@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public GameObject mainMenu;
+    public MainMenu mainMenu;
     public InGame inGame;
 
     public bool hasRecord => PlayerPrefs.HasKey("Record");
@@ -27,7 +28,7 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
-        if (!mainMenu.activeSelf) mainMenu.SetActive(true);
+        if (!mainMenu.gameObject.activeSelf) mainMenu.gameObject.SetActive(true);
         if (inGame.gameObject.activeSelf) inGame.gameObject.SetActive(false);
     }
 
@@ -39,7 +40,14 @@ public class GameManager : MonoBehaviour
     public void OnClickBtnPlay()
     {
         SoundManager.Instance.PlaySFX(SFX_Type.ON_CLICK);
-        mainMenu.SetActive(false);
+
+        StartCoroutine(WaitForPlay());
+    }
+
+    private IEnumerator WaitForPlay()
+    {
+        yield return mainMenu.WaitForPlay();
+        mainMenu.gameObject.SetActive(false);
         inGame.gameObject.SetActive(true);
     }
 
@@ -52,7 +60,7 @@ public class GameManager : MonoBehaviour
 
         inGame.resultPopup.SetActive(false);
 
-        mainMenu.SetActive(true);
+        mainMenu.gameObject.SetActive(true);
         inGame.gameObject.SetActive(false);
     }
 }

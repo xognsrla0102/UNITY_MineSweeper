@@ -20,6 +20,7 @@ public class OptionPopup : MonoBehaviour
 
     public void OnClickBtnBack()
     {
+        SoundManager.Instance.PlaySFX(SFX_Type.ON_CLICK);
         gameObject.SetActive(false);
     }
 

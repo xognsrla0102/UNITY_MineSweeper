@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Rendering.PostProcessing;
+using EZCameraShake;
 
 public class InGame : MonoBehaviour
 {
@@ -33,11 +35,27 @@ public class InGame : MonoBehaviour
     [HideInInspector] public bool isResult;
     [HideInInspector] public bool waitForResult;
 
+    [SerializeField] private PostProcessProfile profile;
+    private ChromaticAberration chromaticAberration;
+    private Grain grain;
+    private LensDistortion lensDistortion;
+
     private List<Vector2> bombsPos = new List<Vector2>();
+
+    public void Awake()
+    {
+        chromaticAberration = profile.GetSetting<ChromaticAberration>();
+        grain = profile.GetSetting<Grain>();
+        lensDistortion = profile.GetSetting<LensDistortion>();
+    }
 
     public void OnEnable()
     {
         SoundManager.Instance.PlayBGM(BGM_Type.IN_GAME);
+
+        chromaticAberration.intensity.value = 0f;
+        grain.intensity.value = 0f;
+        lensDistortion.intensity.value = 0f;
 
         // 블럭 생성
         for (int i = 0; i < Utility.SIZEY; i++)
@@ -49,7 +67,7 @@ public class InGame : MonoBehaviour
             }
         }
 
-        int bombCnt = Random.Range(10, 20);
+        int bombCnt = Random.Range(Utility.bombMinCnt, Utility.bombMaxCnt);
         int nowBombCnt = 0;
         int by, bx;
 
@@ -146,6 +164,8 @@ public class InGame : MonoBehaviour
 
         ingameTimer.StopTimer();
 
+        CameraShaker.Instance.ShakeOnce(2f, 4f, 0.1f, 2f);
+
         StartCoroutine(GameOverCoroutine());
     }
 
@@ -162,14 +182,51 @@ public class InGame : MonoBehaviour
         SoundManager.Instance.PlayBGM(BGM_Type.GAME_FAIL);
         yield return new WaitForSeconds(3f);
 
+        resultPopup.SetActive(true);
         waitForResult = false;
 
-        resultPopup.SetActive(true);
         timeText.text = $"Record [Now : FAILED] / [Best : [{(GameManager.Instance.hasRecord ? $"{GameManager.Instance.Record:0.000}" : "NO-RECORD")}]";
     }
 
     public void SetBG_Color(Color color)
     {
         backGround.color = color;
+    }
+
+    public void ScreenBlackEffect()
+    {
+        StartCoroutine(ScreenBlackEffectCoroutine());
+    }
+
+    private IEnumerator ScreenBlackEffectCoroutine()
+    {
+        chromaticAberration.intensity.value = 0.5f;
+        lensDistortion.intensity.value = -100f;
+
+        do
+        {
+            chromaticAberration.intensity.Interp(chromaticAberration.intensity.value, 0f, Time.deltaTime);
+            lensDistortion.intensity.Interp(lensDistortion.intensity.value, 0f, Time.deltaTime);
+            yield return null;
+        } while (chromaticAberration.intensity.value >= 0.001f);
+
+        chromaticAberration.intensity.value = 0f;
+        lensDistortion.intensity.value = 0f;
+    }
+
+    public void ScreenGrainEffect()
+    {
+        StartCoroutine(ScreenGrainEffectCoroutine());
+    }
+
+    private IEnumerator ScreenGrainEffectCoroutine()
+    {
+        do
+        {
+            grain.intensity.Interp(grain.intensity.value, 1f, Time.deltaTime / 5f);
+            yield return null;
+        } while (grain.intensity.value <= 0.9f);
+
+        grain.intensity.value = 1f;
     }
 }
