@@ -19,7 +19,6 @@ public class Timer : MonoBehaviour
     private float RemainTimeSec => (LIMIT_MILI_SECONDS - TotalTime) / 1000f;
 
     private readonly Stopwatch ingameTimer = new Stopwatch();
-    private readonly Stopwatch secTimer = new Stopwatch();
 
     public bool IsBlack
     {
@@ -60,7 +59,6 @@ public class Timer : MonoBehaviour
     public void StopTimer()
     {
         if (ingameTimer.IsRunning) ingameTimer.Stop();
-        if (secTimer.IsRunning) secTimer.Stop();
     }
 
     public void Update()
@@ -71,31 +69,25 @@ public class Timer : MonoBehaviour
 
     private IEnumerator CheckVelTime()
     {
-        secTimer.Start();
-
         while (true)
         {
-            // 인게임 시간의 1초 마다 여기로 들어옴
-            if(secTimer.ElapsedMilliseconds / timeOffset >= 1_000)
+            float remainTime = RemainTimeSec;
+
+            // 10초 지난 횟수 만큼 속도 가중치를 더함[0.25 배]
+            timeOffset = 2.25f - (int)(10 - remainTime / 10) * 0.0025f;
+
+            if (remainTime <= 80)
+                IsBlack = true;
+
+            if (remainTime <= 0)
             {
-                secTimer.Restart();
-
-                float remainTime = RemainTimeSec;
-
-                // 10초 지난 횟수 만큼 속도 가중치를 더함[0.25 배]
-                timeOffset = 2.25f - (int)(10 - remainTime / 10) * 0.0025f;
-
-                if (remainTime <= 80)
-                    IsBlack = true;
-
-                if (remainTime < 1)
-                {
-                    isStop = true;
-                    timeText.text = $"YOU FAILED";
-                    GameManager.Instance.inGame.GameOver();
-                    yield break;
-                }
+                isStop = true;
+                timeText.text = $"YOU FAILED";
+                yield return new WaitForSeconds(5f);
+                GameManager.Instance.inGame.GameOver();
+                yield break;
             }
+
             yield return null;
         }
     }

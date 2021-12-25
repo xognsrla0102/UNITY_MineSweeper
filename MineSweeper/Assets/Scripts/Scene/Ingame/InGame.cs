@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class InGame : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class InGame : MonoBehaviour
     [HideInInspector] public bool isResult;
     [HideInInspector] public bool waitForResult;
 
+    private List<Vector2> bombsPos = new List<Vector2>();
+
     public void OnEnable()
     {
         SoundManager.Instance.PlayBGM(BGM_Type.IN_GAME);
@@ -57,6 +60,8 @@ public class InGame : MonoBehaviour
             bx = Random.Range(0, Utility.SIZEX);
 
             if (blockMap[by, bx].isBomb) continue;
+
+            bombsPos.Add(new Vector2(bx, by));
             blockMap[by, bx].isBomb = true;
             nowBombCnt++;
         }
@@ -78,6 +83,8 @@ public class InGame : MonoBehaviour
     {
         foreach (var block in blockMap)
             Destroy(block.GetComponent<Transform>().gameObject);
+
+        bombsPos.Clear();
     }
 
     public void OnClickBlock(int y, int x)
@@ -146,13 +153,10 @@ public class InGame : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
 
-        for (int i = 0; i < Utility.SIZEY; i++)
+        foreach (var bombPos in bombsPos)
         {
-            for (int j = 0; j < Utility.SIZEX; j++)
-            {
-                blockMap[i, j].BreakAfterGameOver();
-                yield return new WaitForSeconds(0.02f);
-            }
+            blockMap[(int)bombPos.y, (int)bombPos.x].BreakAfterGameOver();
+            yield return new WaitForSeconds(0.02f);
         }
 
         SoundManager.Instance.PlayBGM(BGM_Type.GAME_FAIL);

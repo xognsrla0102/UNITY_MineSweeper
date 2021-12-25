@@ -2,7 +2,18 @@
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    private static GameManager instance;
+    public static GameManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<GameManager>();
+            }
+            return instance;
+        }
+    }
 
     public GameObject mainMenu;
     public InGame inGame;
@@ -12,12 +23,6 @@ public class GameManager : MonoBehaviour
     {
         get { return hasRecord ? PlayerPrefs.GetFloat("Record") : 999f; }
         set { PlayerPrefs.SetFloat("Record", value); }
-    }
-
-    public void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
     }
 
     public void Start()

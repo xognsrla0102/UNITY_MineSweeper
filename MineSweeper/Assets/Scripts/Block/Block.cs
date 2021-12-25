@@ -44,7 +44,6 @@ public class Block : MonoBehaviour
     private int aroundBombCnt;
 
     public bool isBomb;
-    //public bool ;
 
     [SerializeField] private GameObject breakEffect;
 
@@ -85,13 +84,10 @@ public class Block : MonoBehaviour
 
     public void BreakAfterGameOver()
     {
-        // 이미 깬 것들은 깰 필요 없음
-        if (BlockType == BlockType.BROKEN || BlockType == BlockType.BOMB) return;
-
         GameObject breakEffect = Instantiate(this.breakEffect);
         breakEffect.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
 
-        BlockType = isBomb ? BlockType.BOMB : BlockType.BROKEN;
+        BlockType = BlockType.BOMB;
     }
 
     public void OnMouseOver()
@@ -105,8 +101,6 @@ public class Block : MonoBehaviour
         if (MouseInput.Instance.MiddleClick())
             OnMiddleClick();
     }
-
-    //public IEnumerator 10SecAfterBlink
 
     public void OnClick()
     {

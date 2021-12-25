@@ -25,22 +25,36 @@ public enum SFX_Type
 
 public class SoundManager : MonoBehaviour
 {
-    public static SoundManager Instance;
+    private static SoundManager instance;
+    public static SoundManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<SoundManager>();
+            }
+            return instance;
+        }
+    }
 
     public List<Audio> bgms;
     public List<Audio> sfxs;
 
+    private float bgmVolume;
+    private float sfxVolume;
+
     public void Awake()
     {
-        if (Instance == null)
-            Instance = this;
+        bgmVolume = PlayerPrefs.GetFloat("BGM_Volume", 1f);
+        sfxVolume = PlayerPrefs.GetFloat("SFX_Volume", 1f);
 
         foreach (var audio in bgms)
         {
             audio.source = gameObject.AddComponent<AudioSource>();
             audio.source.clip = audio.clip;
 
-            audio.source.volume = audio.volume;
+            audio.source.volume = bgmVolume;
             audio.source.loop = audio.isLoop;
         }
 
@@ -49,7 +63,7 @@ public class SoundManager : MonoBehaviour
             audio.source = gameObject.AddComponent<AudioSource>();
             audio.source.clip = audio.clip;
 
-            audio.source.volume = audio.volume;
+            audio.source.volume = sfxVolume;
             audio.source.loop = audio.isLoop;
         }
     }
@@ -78,5 +92,21 @@ public class SoundManager : MonoBehaviour
     {
         Audio bgm = bgms.Find(audio => audio.source.isPlaying);
         if (bgm != null) bgm.source.Stop();
+    }
+
+    public void SetBGMVolume(float value)
+    {
+        bgmVolume = value;
+
+        foreach (var audio in bgms)
+            audio.source.volume = bgmVolume;            
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        sfxVolume = value;
+
+        foreach (var audio in sfxs)
+            audio.source.volume = sfxVolume;
     }
 }

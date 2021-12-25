@@ -9,6 +9,5 @@ public class Audio
     public SFX_Type sfxType;
 
     public AudioClip clip;
-    [Range(0, 1)] public float volume;
     public bool isLoop;
 }

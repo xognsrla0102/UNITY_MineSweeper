@@ -10,5 +10,5 @@ public class MouseInput : MonoBehaviour
 
     public bool LeftClick() => Input.GetMouseButtonUp(0);
     public bool RightClick() => Input.GetMouseButtonUp(1);
-    public bool MiddleClick() => Input.GetMouseButtonDown(2);
+    public bool MiddleClick() => Input.GetMouseButtonUp(2);
 }
