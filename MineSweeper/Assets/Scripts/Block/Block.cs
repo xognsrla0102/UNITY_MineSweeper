@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using EZCameraShake;
 
 public class Block : MonoBehaviour
 {
@@ -123,7 +124,8 @@ public class Block : MonoBehaviour
         {
             SoundManager.Instance.PlaySFX(SFX_Type.BOMB);
             BlockType = BlockType.BOMB;
-            GameManager.Instance.inGame.GameOver();
+            CameraShaker.Instance.ShakeOnce(2f, 4f, 0.1f, 2f);
+            GameManager.Instance.inGame.GameOver(false);
             return;
         }
 

@@ -8,8 +8,9 @@ public static class Utility
     public const int SIZEY = 30;
     public const int SIZEX = 30;
 
-    public const int bombMinCnt = 100;
-    public const int bombMaxCnt = 110;
+    public const int bombGosuCnt = 100;
+    public const int bombHumanCnt = 90;
+    public const int bombNoobCnt = 80;
 
     public static Color[] BLOCK_COLORS = new Color[(int)BlockType.COUNT]
     {

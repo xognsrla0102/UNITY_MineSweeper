@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Rendering.PostProcessing;
-using EZCameraShake;
 
 public class InGame : MonoBehaviour
 {
@@ -42,6 +41,8 @@ public class InGame : MonoBehaviour
 
     private List<Vector2> bombsPos = new List<Vector2>();
 
+    [HideInInspector] public LevelType levelType;
+
     public void Awake()
     {
         chromaticAberration = profile.GetSetting<ChromaticAberration>();
@@ -67,7 +68,16 @@ public class InGame : MonoBehaviour
             }
         }
 
-        int bombCnt = Random.Range(Utility.bombMinCnt, Utility.bombMaxCnt);
+        int bombCnt = 0;
+
+        switch (levelType)
+        {
+            case LevelType.GOSU: bombCnt = Utility.bombGosuCnt; break;
+            case LevelType.HUMAN: bombCnt = Utility.bombHumanCnt; break;
+            case LevelType.NOOB: bombCnt = Utility.bombNoobCnt; break;
+            default: Debug.Assert(false); break;
+        }
+
         int nowBombCnt = 0;
         int by, bx;
 
@@ -155,23 +165,28 @@ public class InGame : MonoBehaviour
         timeText.text = $"Record [Now : {nowRecord:0.000}] / [Best : {bestRecord:0.000}]";
     }
 
-    public void GameOver()
+    public void GameOver(bool isTimeOver)
     {
-        SoundManager.Instance.StopBGM();
-
         isResult = true;
         waitForResult = true;
 
         ingameTimer.StopTimer();
 
-        CameraShaker.Instance.ShakeOnce(2f, 4f, 0.1f, 2f);
-
-        StartCoroutine(GameOverCoroutine());
+        StartCoroutine(GameOverCoroutine(isTimeOver));
     }
 
-    private IEnumerator GameOverCoroutine()
+    private IEnumerator GameOverCoroutine(bool isTimeOver)
     {
-        yield return new WaitForSeconds(3f);
+        if (isTimeOver)
+        {
+            yield return new WaitForSeconds(5f);
+            SoundManager.Instance.StopBGM();
+        }
+        else
+        {
+            SoundManager.Instance.StopBGM();
+            yield return new WaitForSeconds(3f);
+        }
 
         foreach (var bombPos in bombsPos)
         {
@@ -228,5 +243,18 @@ public class InGame : MonoBehaviour
         } while (grain.intensity.value <= 0.9f);
 
         grain.intensity.value = 1f;
+    }
+
+    public void OnClickBtnBack()
+    {
+        // 게임 오버 모션 중에는 나갈 수 없음
+        if (waitForResult) return;
+
+        SoundManager.Instance.PlaySFX(SFX_Type.ON_CLICK);
+
+        resultPopup.SetActive(false);
+
+        GameManager.Instance.mainMenu.gameObject.SetActive(true);
+        gameObject.SetActive(false);
     }
 }

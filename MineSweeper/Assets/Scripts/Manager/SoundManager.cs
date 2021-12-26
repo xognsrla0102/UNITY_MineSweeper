@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 public enum BGM_Type
@@ -21,6 +20,7 @@ public enum SFX_Type
     BREAK_BLOCK_3,
     BREAK_BLOCK_4,
     BOMB,
+    SFX_NUM
 }
 
 public class SoundManager : MonoBehaviour

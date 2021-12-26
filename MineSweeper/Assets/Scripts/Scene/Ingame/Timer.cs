@@ -109,8 +109,7 @@ public class Timer : MonoBehaviour
             {
                 isStop = true;
                 timeText.text = $"YOU FAILED";
-                yield return new WaitForSeconds(5f);
-                GameManager.Instance.inGame.GameOver();
+                GameManager.Instance.inGame.GameOver(true);
                 yield break;
             }
 
