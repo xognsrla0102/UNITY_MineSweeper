@@ -19,7 +19,19 @@ public class Block : MonoBehaviour
                     aroundBombCntText.text = "━";
                     break;
                 case BlockType.BROKEN: // 깨지면 주변 지뢰 수 표기
-                    aroundBombCntText.text = aroundBombCnt == 0 ? string.Empty : $"{aroundBombCnt}";
+                    switch (aroundBombCnt)
+                    {
+                        case 0: aroundBombCntText.text = string.Empty; break;
+                        case 1: aroundBombCntText.text = $"<color=#0000ff>{aroundBombCnt}</color>"; break;
+                        case 2: aroundBombCntText.text = $"<color=#008000>{aroundBombCnt}</color>"; break;
+                        case 3: aroundBombCntText.text = $"<color=#ff0000>{aroundBombCnt}</color>"; break;
+                        case 4: aroundBombCntText.text = $"<color=#000080>{aroundBombCnt}</color>"; break;
+                        case 5: aroundBombCntText.text = $"<color=#800000>{aroundBombCnt}</color>"; break;
+                        case 6: aroundBombCntText.text = $"<color=#008080>{aroundBombCnt}</color>"; break;
+                        case 7: aroundBombCntText.text = $"<color=#000000>{aroundBombCnt}</color>"; break;
+                        case 8: aroundBombCntText.text = $"<color=#808080>{aroundBombCnt}</color>"; break;
+                        default: Debug.Assert(false); break;
+                    }
                     break;
                 case BlockType.FLAG: // 깃발
                     aroundBombCntText.text = "※";
@@ -118,6 +130,31 @@ public class Block : MonoBehaviour
         if (BlockType != BlockType.UNBROKEN && BlockType != BlockType.QUESTION) return;
 
         MakeBreakEffect();
+
+        if (!GameManager.Instance.inGame.isFirstClick)
+        {
+            GameManager.Instance.inGame.isFirstClick = true;
+
+            // 첫 클릭에 죽는 경우 없도록 처리
+            if (isBomb)
+            {
+                int bombIdx = GameManager.Instance.inGame.bombsPos.FindIndex(pos => pos.x == x && pos.y == y);
+
+                int by;
+                int bx;
+
+                while (true)
+                {
+                    by = Random.Range(0, Utility.SIZEY);
+                    bx = Random.Range(0, Utility.SIZEX);
+                    if (!blockMap[by, bx].isBomb) break;
+                }
+
+                GameManager.Instance.inGame.bombsPos[bombIdx] = new Vector2(bx, by);
+                blockMap[by, bx].isBomb = true;
+                isBomb = false;
+            }
+        }
 
         // 폭탄일 경우 게임 오버
         if (isBomb)

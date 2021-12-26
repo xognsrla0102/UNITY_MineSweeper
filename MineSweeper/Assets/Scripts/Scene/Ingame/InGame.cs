@@ -12,7 +12,7 @@ public class InGame : MonoBehaviour
 
     [SerializeField] private Text remainBlock;
     private int remainBlockCnt;
-    [HideInInspector] public int RemainBlockCnt
+    public int RemainBlockCnt
     {
         get { return remainBlockCnt; }
         set
@@ -39,9 +39,9 @@ public class InGame : MonoBehaviour
     private Grain grain;
     private LensDistortion lensDistortion;
 
-    private List<Vector2> bombsPos = new List<Vector2>();
-
+    [HideInInspector] public List<Vector2> bombsPos = new List<Vector2>();
     [HideInInspector] public LevelType levelType;
+    [HideInInspector] public bool isFirstClick;
 
     public void Awake()
     {
@@ -103,6 +103,7 @@ public class InGame : MonoBehaviour
 
         isResult = false;
         waitForResult = false;
+        isFirstClick = false;
 
         RemainBlockCnt = Utility.SIZEX * Utility.SIZEY - bombCnt;
     }
@@ -168,7 +169,6 @@ public class InGame : MonoBehaviour
     public void GameOver(bool isTimeOver)
     {
         isResult = true;
-        waitForResult = true;
 
         ingameTimer.StopTimer();
 
@@ -198,7 +198,6 @@ public class InGame : MonoBehaviour
         yield return new WaitForSeconds(3f);
 
         resultPopup.SetActive(true);
-        waitForResult = false;
 
         timeText.text = $"Record [Now : FAILED] / [Best : [{(GameManager.Instance.hasRecord ? $"{GameManager.Instance.Record:0.000}" : "NO-RECORD")}]";
     }
@@ -247,9 +246,6 @@ public class InGame : MonoBehaviour
 
     public void OnClickBtnBack()
     {
-        // 게임 오버 모션 중에는 나갈 수 없음
-        if (waitForResult) return;
-
         SoundManager.Instance.PlaySFX(SFX_Type.ON_CLICK);
 
         resultPopup.SetActive(false);
